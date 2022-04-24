@@ -6,23 +6,23 @@ let experiments = {};
 let experimentWeights = {};
 let activeExperiments = {};
 let experimentsWithDefinedVariants = {};
-let playedExperiments = {};
+let ViewedExperiments = {};
 let customDistributionAlgorithm = undefined;
 
 const emitter = new EventEmitter();
 
 const PushtellEventEmitter = function () {};
 
-PushtellEventEmitter.prototype.emitWin = function (experimentName) {
+PushtellEventEmitter.prototype.emitClick = function (experimentName) {
   if (typeof experimentName !== 'string') {
     throw new Error(
       "Required argument 'experimentName' should have type 'string'"
     );
   }
-  emitter.emit('win', experimentName, values[experimentName]);
+  emitter.emit('click', experimentName, values[experimentName]);
 };
 
-PushtellEventEmitter.prototype._emitPlay = function (
+PushtellEventEmitter.prototype._emitView = function (
   experimentName,
   variantName
 ) {
@@ -36,15 +36,15 @@ PushtellEventEmitter.prototype._emitPlay = function (
       "Required argument 'variantName' should have type 'string'"
     );
   }
-  if (!playedExperiments[experimentName]) {
-    emitter.emit('play', experimentName, variantName);
-    playedExperiments[experimentName] = true;
+  if (!ViewedExperiments[experimentName]) {
+    emitter.emit('view', experimentName, variantName);
+    ViewedExperiments[experimentName] = true;
   }
 };
 
-PushtellEventEmitter.prototype._resetPlayedExperiments = function () {
+PushtellEventEmitter.prototype._resetViewedExperiments = function () {
   values = {};
-  playedExperiments = {};
+  ViewedExperiments = {};
 };
 
 PushtellEventEmitter.prototype._reset = function () {
@@ -53,7 +53,7 @@ PushtellEventEmitter.prototype._reset = function () {
   experimentWeights = {};
   activeExperiments = {};
   experimentsWithDefinedVariants = {};
-  playedExperiments = {};
+  ViewedExperiments = {};
   customDistributionAlgorithm = undefined;
 };
 
@@ -112,34 +112,34 @@ PushtellEventEmitter.prototype.once = function (eventName, callback) {
   return emitter.once(eventName, callback);
 };
 
-PushtellEventEmitter.prototype.addPlayListener = function (
+PushtellEventEmitter.prototype.addViewListener = function (
   experimentName,
   callback
 ) {
   if (typeof experimentName === 'function') {
     callback = experimentName;
-    return emitter.addListener('play', (_experimentName, variantName) => {
+    return emitter.addListener('view', (_experimentName, variantName) => {
       callback(_experimentName, variantName);
     });
   }
-  return emitter.addListener('play', (_experimentName, variantName) => {
+  return emitter.addListener('view', (_experimentName, variantName) => {
     if (_experimentName === experimentName) {
       callback(_experimentName, variantName);
     }
   });
 };
 
-PushtellEventEmitter.prototype.addWinListener = function (
+PushtellEventEmitter.prototype.addClickListener = function (
   experimentName,
   callback
 ) {
   if (typeof experimentName === 'function') {
     callback = experimentName;
-    return emitter.addListener('win', (_experimentName, variantName) => {
+    return emitter.addListener('click', (_experimentName, variantName) => {
       callback(_experimentName, variantName);
     });
   }
-  return emitter.addListener('win', (_experimentName, variantName) => {
+  return emitter.addListener('click', (_experimentName, variantName) => {
     if (_experimentName === experimentName) {
       callback(_experimentName, variantName);
     }

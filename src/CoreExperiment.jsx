@@ -16,6 +16,7 @@ const filterVariants = (name, children) => {
       error.type = 'PUSHTELL_INVALID_CHILD';
       throw error;
     }
+    console.log(variants);
     variants[element.props.name] = element;
     emitter.addExperimentVariant(name, element.props.name);
   });
@@ -34,6 +35,7 @@ const CoreExperiment = (props) => {
     props.defaultVariantName
   );
 
+  console.log(variants);
   return selectVariant(variants, []);
 };
 

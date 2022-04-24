@@ -25,8 +25,8 @@ export default class Experiment extends Component {
 
   static displayName = 'Pushtell.Experiment';
 
-  win = () => {
-    emitter.emitWin(this.props.name);
+  click = () => {
+    emitter.emitClick(this.props.name);
   };
 
   render() {

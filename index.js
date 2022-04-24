@@ -4,6 +4,5 @@ module.exports = {
   emitter: require('./lib/emitter').default,
   useExperiment: require('./lib/hook').default,
   experimentDebugger: require('./lib/debugger'),
-  mixpanelHelper: require('./lib/helpers/mixpanel').default,
-  segmentHelper: require('./lib/helpers/segment').default,
+  dataflick: require('./lib/helpers/dataflick').default,
 };

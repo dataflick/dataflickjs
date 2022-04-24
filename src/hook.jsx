@@ -20,7 +20,7 @@ const useExperiment = (experimentName, userIdentifier, defaultVariantName) => {
   useEffect(() => {
     emitter._incrementActiveExperiments(experimentName);
     emitter.setActiveVariant(experimentName, activeVariant);
-    emitter._emitPlay(experimentName, activeVariant);
+    emitter._emitView(experimentName, activeVariant);
 
     const variantListener = emitter.addActiveVariantListener(
       experimentName,
@@ -39,7 +39,7 @@ const useExperiment = (experimentName, userIdentifier, defaultVariantName) => {
   return {
     experimentName,
     activeVariant,
-    emitWin: () => emitter.emitWin(experimentName),
+    emitClick: () => emitter.emitClick(experimentName),
     selectVariant: selectVariant(activeVariant),
   };
 };
