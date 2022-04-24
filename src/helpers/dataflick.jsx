@@ -27,15 +27,19 @@ export default {
       //if it wasn't visited before
       if (
         typeof visited == 'undefined' ||
-        visited.indexOf(window.location.href) == -1
+        visited.indexOf(
+          window.location.href + ' ' + experimentName + ' ' + variantName
+        ) == -1
       ) {
         if (typeof visited == 'undefined') visited = [];
 
-        visited.push(window.location.href);
+        visited.push(
+          window.location.href + ' ' + experimentName + ' ' + variantName
+        );
 
         console.log('First visit, registering view:');
         console.log(visited);
-        cookies.set('visited', visited);
+        cookies.set('visited', visited, { path: '/', maxAge: 3600000 });
 
         const res = await fetch('http://ip-api.com/json');
         let data = await res.json();
@@ -67,14 +71,30 @@ export default {
       experimentName,
       variantName
     ) {
-      await fetch('https://dataflick.herokuapp.com/v1/click', {
-        method: 'POST',
-        header: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          click_date: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
-          view: parseInt(window.localStorage.getItem(variantName)),
-        }),
-      }).then((res) => console.log('clicked'));
+      var clicked = cookies.get('clicked');
+
+      if (
+        typeof clicked == 'undefined' ||
+        clicked.indexOf(experimentName + ' ' + variantName) == -1
+      ) {
+        if (typeof clicked == 'undefined') clicked = [];
+
+        clicked.push(experimentName + ' ' + variantName);
+        console.log('First click, registering click:');
+        console.log(clicked);
+        cookies.set('clicked', clicked, { path: '/', maxAge: 3600000 });
+
+        await fetch('https://dataflick.herokuapp.com/v1/click', {
+          method: 'POST',
+          header: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            click_date: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+            view: parseInt(window.localStorage.getItem(variantName)),
+          }),
+        }).then((res) => console.log('clicked'));
+      } else {
+        console.log('Variant already clicked, skipping click');
+      }
     });
   },
   disable() {
